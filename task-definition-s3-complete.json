@@ -1,0 +1,95 @@
+{
+    "family": "ray-parsedmarc",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "512",
+    "memory": "1024",
+    "executionRoleArn": "arn:aws:iam::167290361699:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::167290361699:role/ray-parsedmarc-task-role",
+    "containerDefinitions": [
+        {
+            "name": "parsedmarc",
+            "image": "167290361699.dkr.ecr.us-west-1.amazonaws.com/ray/parsedmarc:latest",
+            "cpu": 0,
+            "portMappings": [],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "IMAP_HOST",
+                    "value": "disabled"
+                },
+                {
+                    "name": "IMAP_USER",
+                    "value": "disabled"
+                },
+                {
+                    "name": "IMAP_PASSWORD",
+                    "value": "disabled"
+                },
+                {
+                    "name": "IMAP_PASS",
+                    "value": "disabled"
+                },
+                {
+                    "name": "S3_BUCKET",
+                    "value": "ray-dmarc-processed-167290361699"
+                },
+                {
+                    "name": "S3_PREFIX",
+                    "value": "reports"
+                },
+                {
+                    "name": "S3_RAW_BUCKET",
+                    "value": "ray-dmarc-raw-167290361699"
+                },
+                {
+                    "name": "S3_RAW_PREFIX",
+                    "value": "raw"
+                },
+                {
+                    "name": "AWS_DEFAULT_REGION",
+                    "value": "us-west-1"
+                },
+                {
+                    "name": "PROCESS_MODE",
+                    "value": "s3"
+                },
+                {
+                    "name": "WATCH",
+                    "value": "True"
+                },
+                {
+                    "name": "PARSEDMARC_CONFIG_FILE",
+                    "value": "/app/config/parsedmarc.ini"
+                },
+                {
+                    "name": "WEBHOOK_AGGREGATE_URL",
+                    "value": "https://buctxwcqzitrqruoomkz.supabase.co/functions/v1/parsedmarc-webhook"
+                },
+                {
+                    "name": "WEBHOOK_FORENSIC_URL",
+                    "value": "https://buctxwcqzitrqruoomkz.supabase.co/functions/v1/parsedmarc-webhook"
+                },
+                {
+                    "name": "WEBHOOK_SMTP_TLS_URL",
+                    "value": "https://buctxwcqzitrqruoomkz.supabase.co/functions/v1/parsedmarc-webhook"
+                },
+                {
+                    "name": "DMARC_INGEST_TOKEN",
+                    "value": "A1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/ray-parsedmarc",
+                    "awslogs-region": "us-west-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "systemControls": []
+        }
+    ]
+}

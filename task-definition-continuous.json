@@ -1,0 +1,73 @@
+{
+    "family": "ray-parsedmarc",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "512",
+    "memory": "1024",
+    "executionRoleArn": "arn:aws:iam::167290361699:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::167290361699:role/ray-parsedmarc-task-role",
+    "containerDefinitions": [
+        {
+            "name": "parsedmarc",
+            "image": "167290361699.dkr.ecr.us-west-1.amazonaws.com/ray/parsedmarc:latest",
+            "cpu": 0,
+            "portMappings": [],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "IMAP_HOST",
+                    "value": "disabled"
+                },
+                {
+                    "name": "IMAP_USER",
+                    "value": "disabled"
+                },
+                {
+                    "name": "IMAP_PASSWORD",
+                    "value": "disabled"
+                },
+                {
+                    "name": "IMAP_PASS",
+                    "value": "disabled"
+                },
+                {
+                    "name": "S3_BUCKET",
+                    "value": "ray-dmarc-processed-167290361699"
+                },
+                {
+                    "name": "S3_PREFIX",
+                    "value": "reports"
+                },
+                {
+                    "name": "S3_RAW_BUCKET",
+                    "value": "ray-dmarc-raw-167290361699"
+                },
+                {
+                    "name": "S3_RAW_PREFIX",
+                    "value": "raw"
+                },
+                {
+                    "name": "AWS_DEFAULT_REGION",
+                    "value": "us-west-1"
+                },
+                {
+                    "name": "PROCESS_MODE",
+                    "value": "s3"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/ray-parsedmarc",
+                    "awslogs-region": "us-west-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "command": [
+                "/bin/bash",
+                "-c",
+                "while true; do echo 'Starting parsedmarc processing cycle...'; parsedmarc --config-file /app/config/parsedmarc.ini --s3-bucket ray-dmarc-processed-167290361699 --s3-prefix reports --s3-raw-bucket ray-dmarc-raw-167290361699 --s3-raw-prefix raw; echo 'Processing cycle completed. Waiting 60 seconds...'; sleep 60; done"
+            ]
+        }
+    ]
+}
